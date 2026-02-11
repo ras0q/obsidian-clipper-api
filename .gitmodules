@@ -1,0 +1,4 @@
+[submodule "vendor/obsidian-clipper"]
+	path = vendor/obsidian-clipper
+	url = https://github.com/obsidianmd/obsidian-clipper
+  ignore = dirty
