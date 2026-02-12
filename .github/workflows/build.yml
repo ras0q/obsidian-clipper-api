@@ -1,12 +1,12 @@
 name: Build
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
+    tags:
+      - "*"
+  pull_request:
 
 jobs:
   build:
@@ -16,19 +16,17 @@ jobs:
       id-token: write
     with:
       output: image
-      push: false
+      push: ${{ github.event_name != 'pull_request' }}
       platforms: linux/amd64,linux/arm64
-      target: runner
       cache: true
       cache-mode: max
       meta-images: ghcr.io/${{ github.repository }}
-      meta-tags: |
-        type=ref,event=branch
-        type=ref,event=pr
-        type=sha
       set-meta-labels: true
     secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
 
   test:
     runs-on: ubuntu-latest
