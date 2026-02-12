@@ -1,3 +1,4 @@
-ignoredBuiltDependencies:
+onlyBuiltDependencies:
   - core-js
   - esbuild
+  - lefthook

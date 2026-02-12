@@ -7,10 +7,7 @@
 	"scripts": {
 		"build": "node scripts/build.ts",
 		"dev": "node scripts/build.ts --watch",
-		"start": "node dist/index.node.js",
-		"lint": "biome check .",
-		"lint:fix": "biome check --write .",
-		"format": "biome format --write ."
+		"start": "node dist/index.node.js"
 	},
 	"keywords": [
 		"obsidian",
@@ -36,6 +33,7 @@
 		"@types/jsdom": "27.0.0",
 		"@types/node": "25.2.3",
 		"esbuild": "0.27.3",
+		"lefthook": "2.1.1",
 		"typescript": "5.9.3"
 	}
 }
