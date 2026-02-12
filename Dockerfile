@@ -9,6 +9,7 @@ RUN corepack enable
 
 FROM base AS pruned
 
+# FIXME: Currently, this stage re-runs pnpm install always whenever any file changes,
 RUN --mount=type=bind,source=.,target=/app,rw \
     --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile && \
@@ -21,12 +22,12 @@ RUN pnpm build
 
 FROM base AS runner
 
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/dist/index.node.js /usr/local/bin/obsidian-clipper-api
+RUN chmod +x /usr/local/bin/obsidian-clipper-api
 
 USER node
 EXPOSE 3000
 ENV NODE_ENV=production
 STOPSIGNAL SIGTERM
 
-CMD ["node", "/app/dist/index.node.js"]
+CMD ["obsidian-clipper-api"]

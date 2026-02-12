@@ -17,12 +17,7 @@ const config: esbuild.BuildOptions = {
 	format: "esm",
 	sourcemap: isWatch ? "inline" : false,
 	minify: !isWatch,
-	external: [
-		...builtinModules,
-		...builtinModules.map((m) => `node:${m}`),
-		"jsdom",
-		"defuddle",
-	],
+	external: [...builtinModules, ...builtinModules.map((m) => `node:${m}`)],
 
 	// NOTE: polyfills for obsidian-clipper dependencies
 	alias: {
@@ -30,6 +25,11 @@ const config: esbuild.BuildOptions = {
 			__dirname,
 			"../vendor/obsidian-clipper/src/utils/__mocks__/webextension-polyfill.ts",
 		),
+	},
+	banner: {
+		js: `#!/usr/bin/env node
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);`,
 	},
 	define: {
 		DEBUG_MODE: "false",

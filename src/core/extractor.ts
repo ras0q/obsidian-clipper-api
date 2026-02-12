@@ -1,14 +1,8 @@
 import Defuddle from "defuddle";
-import { JSDOM } from "jsdom";
+import { Window } from "happy-dom";
 // FIXME: why `import { createMarkdownContent }` doesn't work?
 import * as converter from "obsidian-clipper/src/utils/markdown-converter.ts";
 import type { ExtractedPageData } from "../types/api";
-
-// NOTE: Mock DOM environment for obsidian-clipper modules
-const initDom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
-	url: "http://localhost",
-});
-const { window } = initDom;
 
 // NOTE: Mock localStorage for obsidian-clipper modules
 const localStorageMock = (() => {
@@ -36,11 +30,13 @@ const localStorageMock = (() => {
 global.localStorage = localStorageMock;
 global.sessionStorage = localStorageMock;
 
-Object.getOwnPropertyNames(window)
+// NOTE: Mock DOM environment for obsidian-clipper modules
+const mockWindow = new Window();
+Object.getOwnPropertyNames(mockWindow)
 	.filter((prop) => !prop.startsWith("_") && !(prop in global))
 	.forEach((prop) => {
 		// @ts-expect-error: Dynamic global assignment for DOM APIs
-		global[prop] = window[prop];
+		global[prop] = mockWindow[prop];
 	});
 
 export async function fetchAndExtractPage(
@@ -59,13 +55,14 @@ export async function fetchAndExtractPage(
 	}
 
 	const html = await response.text();
-	const dom = new JSDOM(html, { url });
-	const document = dom.window.document;
+
+	const document = mockWindow.document;
+	document.write(html);
+	document.location.href = url;
 
 	const defuddled = new Defuddle(document, { url }).parse();
 
 	const domain = new URL(url).hostname.replace(/^www\./, "");
-	// const content = turndownService.turndown(defuddled.content);
 	const content = converter.createMarkdownContent(defuddled.content, url);
 
 	return {
