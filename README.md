@@ -95,7 +95,7 @@ curl -X POST http://localhost:3000/convert \
 
 ```bash
 pnpm build
-PORT=3000 pnpm start
+pnpm start --port 3000
 ```
 
 See [docs/deployment.md](docs/deployment.md) for Docker and cloud deployment options.

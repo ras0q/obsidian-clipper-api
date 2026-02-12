@@ -4,10 +4,6 @@
 
 See [src/index.ts](../src/index.ts) for supported environment variables.
 
-```bash
-PORT=3000  # Server port (default: 3000)
-```
-
 ## Option 1: Node.js
 
 Requires Node.js version specified in [package.json](../package.json) `engines` field.
@@ -15,7 +11,7 @@ Requires Node.js version specified in [package.json](../package.json) `engines` 
 ```bash
 pnpm install --frozen-lockfile
 pnpm build
-PORT=3000 pnpm start
+pnpm start --port 3000
 ```
 
 ## Option 2: Docker
