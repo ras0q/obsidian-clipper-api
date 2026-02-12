@@ -1,204 +1,114 @@
 # Obsidian Clipper API
 
-Lightweight API for converting web pages to Markdown using Obsidian Clipper templates.
+HTTP API for converting web pages to Markdown using Obsidian Clipper's template system.
 
-## ✅ Phase 1 Implementation Complete
+## Why This Project?
 
-### Features Implemented
+iOS in-app browsers don't support browser extensions. This API provides a stateless HTTP endpoint that accepts a URL and an Obsidian Clipper template, then returns formatted Markdown.
 
-- ✅ URL fetching and content extraction with **Defuddle**
-- ✅ Markdown conversion using Obsidian Clipper's `markdown-converter`
-- ✅ Template variable system (`{{title}}`, `{{url}}`, `{{content}}`, etc.)
-- ✅ Filter support (`{{date:YYYY-MM-DD}}`, `{{title|uppercase}}`, etc.)
-- ✅ Frontmatter generation from template properties
-- ✅ REST API with Hono framework
-  - `GET /health` - Health check
-  - `POST /convert` - Convert URL to Markdown
+## Features
 
-### Quick Start
+- Obsidian Clipper compatible (same template format and variables)
+- Full template support (variables, filters, conditionals, loops)
+- YAML frontmatter generation
+- Stateless (no database, no authentication)
+- Lightweight (Hono framework)
+
+## Quick Start
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start server
-pnpm start
-# or
 pnpm dev
+```
 
-# Test API (in another terminal)
-curl http://localhost:3000/health
+API available at `http://localhost:3000`.
 
+## API Usage
+
+### GET `/`
+
+Returns API information.
+
+```bash
+curl http://localhost:3000/
+```
+
+### POST `/convert`
+
+Converts a web page to Markdown.
+
+```bash
 curl -X POST http://localhost:3000/convert \
   -H "Content-Type: application/json" \
-  -d @test/fixtures/basic-template.json
-```
-
-### Project Structure
-
-```
-obsidian-clipper-api/
-├── src/                    # API implementation
-│   ├── index.ts           # Hono app entry point
-│   ├── routes/            # API endpoints
-│   ├── core/              # Core logic
-│   │   ├── extractor.ts   # Defuddle + fetch
-│   │   ├── variables.ts   # Variable context building
-│   │   ├── renderer.ts    # Template rendering
-│   │   ├── frontmatter.ts # YAML frontmatter generation
-│   │   └── converter.ts   # Main conversion orchestrator
-│   └── types/             # TypeScript types
-├── vendor/                # Git submodule
-│   └── obsidian-clipper/  # Official Obsidian Clipper source
-├── test/
-│   └── fixtures/          # Test templates
-└── docs/
-    └── specification.md   # Full specification
-```
-
-### API Usage
-
-#### Convert URL to Markdown
-
-**Request:**
-```bash
-POST /convert
-Content-Type: application/json
-
-{
-  "url": "https://example.com/article",
-  "template": {
-    "id": "default",
-    "name": "Default Template",
-    "behavior": "create",
-    "noteNameFormat": "{{title}}",
-    "path": "Clips",
-    "noteContentFormat": "# {{title}}\n\n{{content}}",
-    "properties": [
-      {"name": "title", "value": "{{title}}"},
-      {"name": "source", "value": "{{url}}"},
-      {"name": "created", "value": "{{date:YYYY-MM-DD}}"}
-    ]
-  }
-}
+  -d '{
+    "url": "https://example.com",
+    "template": {
+      "id": "default",
+      "name": "Default",
+      "behavior": "create",
+      "noteNameFormat": "{{title}}",
+      "path": "",
+      "noteContentFormat": "# {{title}}\\n\\n{{content}}",
+      "properties": [
+        {"name": "title", "value": "{{title}}"},
+        {"name": "url", "value": "{{url}}"},
+        {"name": "created", "value": "{{date:YYYY-MM-DD}}", "type": "date"}
+      ]
+    }
+  }'
 ```
 
 **Response:**
 ```json
 {
   "success": true,
-  "markdown": "---\ntitle: \"Article Title\"\nsource: \"https://example.com/article\"\ncreated: \"2026-02-12\"\n---\n\n# Article Title\n\nArticle content here...",
+  "markdown": "---\ntitle: \"Example Domain\"...\n---\n\n# Example Domain\n...",
   "metadata": {
-    "title": "Article Title",
+    "title": "Example Domain",
     "domain": "example.com",
-    "wordCount": 450
+    "wordCount": 26
   }
 }
 ```
 
-### Template Variables
-
-Supports all Obsidian Clipper variables:
-
-```
-{{title}}              - Page title
-{{url}}                - Full URL  
-{{domain}}             - Domain name
-{{author}}             - Article author
-{{published}}          - Published date
-{{description}}        - Meta description
-{{content}}            - Markdown content (extracted by Defuddle)
-{{date}}               - Current date (ISO)
-{{date:YYYY-MM-DD}}    - Formatted date
-{{image}}              - Featured image URL
-{{favicon}}            - Favicon URL
-{{wordCount}}          - Word count
-{{schema:*}}           - Schema.org data
+Test with fixture:
+```bash
+curl -X POST http://localhost:3000/convert \
+  -H "Content-Type: application/json" \
+  -d @test/fixtures/basic-template.json
 ```
 
-### Filters
+## Documentation
 
-Supports common filters:
+- **[docs/specification.md](docs/specification.md)** - Full API specification and template system reference
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development guide for contributors
 
-```
-{{title|uppercase}}                    - HELLO WORLD
-{{date:YYYY-MM-DD}}                    - 2026-02-12
-{{author|split:", "|wikilink|join}}   - [[Author 1]], [[Author 2]]
-{{content|strip_html|truncate:500}}   - Plain text, max 500 chars
-{{title|kebab}}                        - hello-world
-{{tags|capitalize}}                    - Clippings, Article
-```
-
-### Development
+## Deployment
 
 ```bash
-# Run development server
-pnpm dev
-
-# Lint and format
-pnpm lint          # Check for issues
-pnpm lint:fix      # Auto-fix issues
-pnpm format        # Format code
-
-# Type checking
-cd src
-tsc --noEmit
+pnpm build
+PORT=3000 pnpm start
 ```
 
-### Deployment Options
+See [docs/deployment.md](docs/deployment.md) for Docker and cloud deployment options.
 
-#### Option 1: Node.js with tsx (Recommended)
+## iOS Integration
 
-```bash
-pnpm start
-```
+Use iOS Shortcuts to clip from Safari/in-app browsers:
 
-#### Option 2: Direct tsx execution
+1. Share URL → Shortcut
+2. Shortcut calls API with template
+3. API returns Markdown
+4. Shortcut creates Obsidian note via `obsidian://new?...`
 
-```bash
-cd src
-tsx index.ts
-```
+See [docs/ios-integration.md](docs/ios-integration.md) for details.
 
-#### Option 2: Docker
-
-```dockerfile
-FROM node:22-alpine
-WORKDIR /app
-COPY . .
-RUN corepack enable pnpm
-RUN pnpm install --frozen-lockfile
-WORKDIR /app/src
-CMD ["tsx", "index.ts"]
-```
-
-#### Option 3: Cloudflare Workers
-
-(Requires adapter - see docs/specification.md)
-
-### Environment Variables
-
-```bash
-PORT=3000  # Server port (default: 3000)
-```
-
-### Next Steps (Phase 2+)
-
-- [ ] Full filter support (import all from Clipper)
-- [ ] Conditional logic (`{{#if}}...{{/if}}`)
-- [ ] Loop support (`{{#for}}...{{/for}}`)
-- [ ] Schema.org extraction
-- [ ] Rate limiting
-- [ ] Input validation (Zod)
-- [ ] OpenAPI spec
-- [ ] Production logging
-
-### License
+## License
 
 MIT
 
-### Acknowledgments
+## Acknowledgments
 
-- Built on [Obsidian Clipper](https://github.com/obsidianmd/obsidian-clipper)
-- Uses [Defuddle](https://github.com/kepano/defuddle) for content extraction
-- Powered by [Hono](https://hono.dev) web framework
+- [Obsidian Clipper](https://github.com/obsidianmd/obsidian-clipper)
+- [Defuddle](https://github.com/kepano/defuddle)
+- [Hono](https://hono.dev)
