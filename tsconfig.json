@@ -15,10 +15,7 @@
 		"isolatedModules": true,
 		"verbatimModuleSyntax": true,
 		"allowImportingTsExtensions": true,
-		"noEmit": true,
-		"paths": {
-			"obsidian-clipper/*": ["./vendor/obsidian-clipper/src/*"]
-		}
+		"noEmit": true
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist", "vendor"]

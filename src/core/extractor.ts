@@ -1,7 +1,7 @@
 import Defuddle from "defuddle";
 import { JSDOM } from "jsdom";
 // FIXME: why `import { createMarkdownContent }` doesn't work?
-import * as converter from "obsidian-clipper/utils/markdown-converter.ts";
+import * as converter from "../../vendor/obsidian-clipper/src/utils/markdown-converter.ts";
 import type { ExtractedPageData } from "../types/api";
 
 const initDom = new JSDOM("<!DOCTYPE html><html><body></body></html>");

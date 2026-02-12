@@ -1,5 +1,5 @@
-import type { Property } from "obsidian-clipper/types/types";
-import { escapeDoubleQuotes } from "obsidian-clipper/utils/string-utils";
+import type { Property } from "../../vendor/obsidian-clipper/src/types/types";
+import { escapeDoubleQuotes } from "../../vendor/obsidian-clipper/src/utils/string-utils";
 
 export async function generateFrontmatter(
 	properties: Property[],

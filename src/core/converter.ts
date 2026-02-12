@@ -1,5 +1,8 @@
-import type { Property, Template } from "obsidian-clipper/types/types";
-import { renderTemplate as clipperRenderTemplate } from "obsidian-clipper/utils/renderer";
+import type {
+	Property,
+	Template,
+} from "../../vendor/obsidian-clipper/src/types/types";
+import { renderTemplate as clipperRenderTemplate } from "../../vendor/obsidian-clipper/src/utils/renderer";
 import type { ExtractedPageData } from "../types/api.ts";
 import { generateFrontmatter } from "./frontmatter.ts";
 import { buildVariableContext } from "./variables.ts";

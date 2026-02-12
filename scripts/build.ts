@@ -23,7 +23,6 @@ const config: esbuild.BuildOptions = {
 
 	// NOTE: polyfills for obsidian-clipper dependencies
 	alias: {
-		"obsidian-clipper": resolve(__dirname, "../vendor/obsidian-clipper/src"),
 		"webextension-polyfill": resolve(
 			__dirname,
 			"../vendor/obsidian-clipper/src/utils/__mocks__/webextension-polyfill.ts",
