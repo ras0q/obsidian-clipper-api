@@ -1,4 +1,4 @@
-import type { Template } from "../../vendor/obsidian-clipper/src/types/types";
+import type { Template } from "obsidian-clipper/src/types/types";
 
 export interface ConvertRequest {
 	url: string;

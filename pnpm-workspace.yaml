@@ -1,4 +1,8 @@
+packages:
+  - "vendor/**"
+
 onlyBuiltDependencies:
-  - core-js
-  - esbuild
-  - lefthook
+  - "@parcel/watcher"
+  - "core-js"
+  - "esbuild"
+  - "lefthook"
