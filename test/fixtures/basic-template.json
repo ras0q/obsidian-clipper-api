@@ -1,0 +1,34 @@
+{
+	"url": "https://example.com",
+	"template": {
+		"id": "basic",
+		"name": "Basic Template",
+		"behavior": "create",
+		"noteNameFormat": "{{title}}",
+		"path": "Clips",
+		"noteContentFormat": "# {{title}}\n\n{{content}}\n\n---\n\nSource: [{{domain}}]({{url}})",
+		"properties": [
+			{
+				"name": "title",
+				"value": "{{title}}"
+			},
+			{
+				"name": "source",
+				"value": "{{url}}"
+			},
+			{
+				"name": "author",
+				"value": "{{author}}"
+			},
+			{
+				"name": "created",
+				"value": "{{date:YYYY-MM-DD HH:mm}}"
+			},
+			{
+				"name": "tags",
+				"value": "clippings, {{domain}}",
+				"type": "multitext"
+			}
+		]
+	}
+}
