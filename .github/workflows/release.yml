@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      target: runner
+      cache: true
+      cache-mode: max
+      meta-images: ghcr.io/${{ github.repository }}
+      meta-tags: |
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+        type=semver,pattern={{major}}
+      set-meta-labels: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}

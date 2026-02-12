@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      output: image
+      push: false
+      platforms: linux/amd64,linux/arm64
+      target: runner
+      cache: true
+      cache-mode: max
+      meta-images: ghcr.io/${{ github.repository }}
+      meta-tags: |
+        type=ref,event=branch
+        type=ref,event=pr
+        type=sha
+      set-meta-labels: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Check format
+        run: pnpm exec biome check .

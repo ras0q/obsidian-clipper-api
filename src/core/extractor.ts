@@ -4,8 +4,38 @@ import { JSDOM } from "jsdom";
 import * as converter from "obsidian-clipper/src/utils/markdown-converter.ts";
 import type { ExtractedPageData } from "../types/api";
 
-const initDom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
+// NOTE: Mock DOM environment for obsidian-clipper modules
+const initDom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+	url: "http://localhost",
+});
 const { window } = initDom;
+
+// NOTE: Mock localStorage for obsidian-clipper modules
+const localStorageMock = (() => {
+	let store: Record<string, string> = {};
+	return {
+		getItem: (key: string) => store[key] || null,
+		setItem: (key: string, value: string) => {
+			store[key] = value;
+		},
+		removeItem: (key: string) => {
+			delete store[key];
+		},
+		clear: () => {
+			store = {};
+		},
+		get length() {
+			return Object.keys(store).length;
+		},
+		key: (index: number) => {
+			const keys = Object.keys(store);
+			return keys[index] || null;
+		},
+	};
+})();
+global.localStorage = localStorageMock;
+global.sessionStorage = localStorageMock;
+
 Object.getOwnPropertyNames(window)
 	.filter((prop) => !prop.startsWith("_") && !(prop in global))
 	.forEach((prop) => {

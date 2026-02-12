@@ -16,9 +16,17 @@ iOS in-app browsers don't support browser extensions. This API provides a statel
 
 ## Quick Start
 
+### Option 1: Node.js
+
 ```bash
 pnpm install
-pnpm dev
+pnpm start
+```
+
+### Option 2: Docker
+
+```bash
+docker run -p 3000:3000 ghcr.io/ras0q/obsidian-clipper-api:latest
 ```
 
 API available at `http://localhost:3000`.
