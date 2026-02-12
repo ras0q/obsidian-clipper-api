@@ -7,8 +7,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const isWatch = process.argv.includes("--watch");
 
 const config: esbuild.BuildOptions = {
-	entryPoints: [resolve(__dirname, "../src/index.ts")],
-	outfile: resolve(__dirname, "../dist/index.mjs"),
+	entryPoints: [
+		resolve(__dirname, "../src/index.ts"),
+		resolve(__dirname, "../src/index.node.ts"),
+	],
+	outdir: resolve(__dirname, "../dist/"),
 	bundle: true,
 	platform: "node",
 	format: "esm",

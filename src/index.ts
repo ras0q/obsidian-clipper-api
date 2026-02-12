@@ -1,5 +1,4 @@
 import { readFile } from "node:fs/promises";
-import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -30,15 +29,5 @@ app.get("/", (c) => {
 		},
 	});
 });
-
-const port = parseInt(process.env.PORT || "3000", 10);
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-	console.log(`Starting Obsidian Clipper API on port ${port}...`);
-	serve({
-		fetch: app.fetch,
-		port,
-	});
-}
 
 export default app;

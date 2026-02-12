@@ -3,11 +3,11 @@
 	"version": "0.1.0",
 	"type": "module",
 	"description": "Lightweight API for converting web pages to Markdown using Obsidian Clipper templates",
-	"main": "./dist/index.mjs",
+	"main": "./dist/index.js",
 	"scripts": {
 		"build": "node scripts/build.ts",
 		"dev": "node scripts/build.ts --watch",
-		"start": "node dist/index.mjs",
+		"start": "node dist/index.node.js",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"format": "biome format --write ."
